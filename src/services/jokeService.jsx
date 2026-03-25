@@ -15,3 +15,13 @@ export const getJokes = () => {
     return response.json()
   })
 }
+
+export const putJoke = (joke) => {
+  return fetch(`http://localhost:8088/jokes/${joke.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(joke)
+  })
+}

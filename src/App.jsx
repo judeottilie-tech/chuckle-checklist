@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import "./App.css"
-import { postJoke, getJokes } from "./services/jokeService"
+import { postJoke, getJokes, putJoke } from "./services/jokeService"
 
 export const App = () => {
   const [newJoke, setNewJoke] = useState("")
@@ -11,6 +11,17 @@ export const App = () => {
   const fetchJokes = () => {
     getJokes().then((jokesArray) => {
       setAllJokesArray(jokesArray)
+    })
+  }
+
+  const toggleTold = (joke) => {
+    const editedJoke = {
+      id: joke.id,
+      text: joke.text,
+      told: joke.told ? false : true,
+    }
+    putJoke(editedJoke).then(() => {
+      fetchJokes()
     })
   }
 
@@ -28,7 +39,7 @@ export const App = () => {
       <div className="app-heading">
         <h1 className="app-heading-text">Chuckle Checklist</h1>
       </div>
-
+      <h2>Add Joke</h2>
       <div className="joke-add-form">
         <input
           value={newJoke}
@@ -44,7 +55,7 @@ export const App = () => {
           onClick={() => {
             postJoke({
               text: newJoke,
-              told: false
+              told: false,
             }).then(() => {
               fetchJokes()
               setNewJoke("")
@@ -57,12 +68,21 @@ export const App = () => {
 
       <div className="joke-lists-container">
         <div className="joke-list-container">
-          <h2>Untold <span className="untold-count">{toBeToldJokesArray.length}</span></h2>
+          <h2>
+            Untold{" "}
+            <span className="untold-count">{toBeToldJokesArray.length}</span>
+          </h2>
           <ul>
             {toBeToldJokesArray.map((joke) => {
               return (
                 <li className="joke-list-item" key={joke.id}>
                   <p className="joke-list-item-text">{joke.text}</p>
+                  <button
+                    className="joke-list-action-toggle"
+                    onClick={() => toggleTold(joke)}
+                  >
+                    {joke.told ? "😄" : "😐"}
+                  </button>
                 </li>
               )
             })}
@@ -70,12 +90,20 @@ export const App = () => {
         </div>
 
         <div className="joke-list-container">
-          <h2>Told <span className="told-count">{toldJokesArray.length}</span></h2>
+          <h2>
+            Told <span className="told-count">{toldJokesArray.length}</span>
+          </h2>
           <ul>
             {toldJokesArray.map((joke) => {
               return (
                 <li className="joke-list-item" key={joke.id}>
                   <p className="joke-list-item-text">{joke.text}</p>
+                  <button
+                    className="joke-list-action-toggle"
+                    onClick={() => toggleTold(joke)}
+                  >
+                    {joke.told ? "😄" : "😐"}
+                  </button>
                 </li>
               )
             })}
