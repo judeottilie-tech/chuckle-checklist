@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import "./App.css"
-import { postJoke, getJokes, putJoke } from "./services/jokeService"
+import { postJoke, getJokes, putJoke, deleteJoke } from "./services/jokeService"
 
 export const App = () => {
   const [newJoke, setNewJoke] = useState("")
@@ -21,6 +21,12 @@ export const App = () => {
       told: joke.told ? false : true,
     }
     putJoke(editedJoke).then(() => {
+      fetchJokes()
+    })
+  }
+
+  const handleDelete = (joke) => {
+    deleteJoke(joke).then(() => {
       fetchJokes()
     })
   }
@@ -77,13 +83,16 @@ export const App = () => {
               return (
                 <li className="joke-list-item" key={joke.id}>
                   <p className="joke-list-item-text">{joke.text}</p>
+                  <button className="joke-list-action-delete" onClick={() => handleDelete(joke)}>
+                    🗑️
+                  </button>
                   <button
                     className="joke-list-action-toggle"
                     onClick={() => toggleTold(joke)}
                   >
-                    {joke.told ? "😄" : "😐"}
+                    {joke.told ? "😐" : "😄"}
                   </button>
-                </li>
+              </li>
               )
             })}
           </ul>
@@ -98,11 +107,14 @@ export const App = () => {
               return (
                 <li className="joke-list-item" key={joke.id}>
                   <p className="joke-list-item-text">{joke.text}</p>
+                  <button className="joke-list-action-delete" onClick={() => handleDelete(joke)}>
+                    🗑️
+                  </button>
                   <button
                     className="joke-list-action-toggle"
                     onClick={() => toggleTold(joke)}
                   >
-                    {joke.told ? "😄" : "😐"}
+                    {joke.told ? "😐" : "😄"}
                   </button>
                 </li>
               )
