@@ -1,7 +1,7 @@
 //this module is responsible for talking to the database
 
 export const postJoke = (joke) => {
-  fetch(`http://localhost:8088/jokes`, {
+  return fetch(`http://localhost:8088/jokes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

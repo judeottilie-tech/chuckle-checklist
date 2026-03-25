@@ -8,16 +8,20 @@ export const App = () => {
   const [toBeToldJokesArray, setToBeToldJokesArray] = useState([])
   const [toldJokesArray, setToldJokesArray] = useState([])
 
-useEffect(() => {
-  getJokes().then((jokesArray) => {
-    setAllJokesArray(jokesArray)
-  })
-}, [])
+  const fetchJokes = () => {
+    getJokes().then((jokesArray) => {
+      setAllJokesArray(jokesArray)
+    })
+  }
 
-useEffect(() => {
-  setToldJokesArray(allJokesArray.filter((joke) => joke.told === true))
-  setToBeToldJokesArray(allJokesArray.filter((joke) => joke.told === false))
-}, [allJokesArray])
+  useEffect(() => {
+    fetchJokes()
+  }, [])
+
+  useEffect(() => {
+    setToldJokesArray(allJokesArray.filter((joke) => joke.told === true))
+    setToBeToldJokesArray(allJokesArray.filter((joke) => joke.told === false))
+  }, [allJokesArray])
 
   return (
     <div className="app-container">
@@ -35,50 +39,48 @@ useEffect(() => {
             setNewJoke(event.target.value)
           }}
         />
-         <button
+        <button
           className="joke-input-submit"
           onClick={() => {
             postJoke({
-            text: newJoke,
-            told: false
+              text: newJoke,
+              told: false
+            }).then(() => {
+              fetchJokes()
+              setNewJoke("")
             })
-            setNewJoke("")
           }}
         >
           Add Joke
         </button>
-        </div>
-        <div className="joke-lists-container">
-            <div className="joke-list-container">
-              <h2>Untold <span className="untold-count">{toBeToldJokesArray.length}</span></h2>
-              <ul>
-                {toBeToldJokesArray.map((joke) => {
-                  return (
-                   <li className="joke-list-item" key={joke.id}>
-      <p className="joke-list-item-text">{joke.text}</p>
-    </li> 
-                  )
-                })}
-              </ul>
-            </div>
-            <div className="joke-list-container">
-              <h2>
-                Told <span className="told-count">{toldJokesArray.length}
-                </span>
-              </h2>
-              <ul>
-                {toldJokesArray.map((joke) => {
-                  return (
-                  <li className="joke-list-item" key={joke.id}>
-                    <p className="joke-list-item-text">{joke.text}
-                    </p>
+      </div>
 
-                  </li>
-                  )
-                }
-              )}
-              </ul>
-            </div>
+      <div className="joke-lists-container">
+        <div className="joke-list-container">
+          <h2>Untold <span className="untold-count">{toBeToldJokesArray.length}</span></h2>
+          <ul>
+            {toBeToldJokesArray.map((joke) => {
+              return (
+                <li className="joke-list-item" key={joke.id}>
+                  <p className="joke-list-item-text">{joke.text}</p>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+
+        <div className="joke-list-container">
+          <h2>Told <span className="told-count">{toldJokesArray.length}</span></h2>
+          <ul>
+            {toldJokesArray.map((joke) => {
+              return (
+                <li className="joke-list-item" key={joke.id}>
+                  <p className="joke-list-item-text">{joke.text}</p>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </div>
     </div>
   )
